@@ -1,0 +1,39 @@
+{
+  "generator-jhipster": {
+    "promptValues": {
+      "packageName": "org.contacomigo.core.oauth",
+      "nativeLanguage": "pt-br"
+    },
+    "jhipsterVersion": "4.1.1",
+    "baseName": "oauth",
+    "packageName": "org.contacomigo.core.oauth",
+    "packageFolder": "org/contacomigo/core/oauth",
+    "serverPort": "9999",
+    "authenticationType": "uaa",
+    "hibernateCache": "hazelcast",
+    "clusteredHttpSession": false,
+    "websocket": false,
+    "databaseType": "sql",
+    "devDatabaseType": "h2Disk",
+    "prodDatabaseType": "mysql",
+    "searchEngine": false,
+    "messageBroker": "kafka",
+    "serviceDiscoveryType": false,
+    "buildTool": "maven",
+    "enableSocialSignIn": false,
+    "enableTranslation": true,
+    "applicationType": "uaa",
+    "testFrameworks": [
+      "gatling",
+      "cucumber"
+    ],
+    "jhiPrefix": "jhi",
+    "skipClient": true,
+    "nativeLanguage": "pt-br",
+    "languages": [
+      "pt-br",
+      "en"
+    ],
+    "clientPackageManager": "npm"
+  }
+}
