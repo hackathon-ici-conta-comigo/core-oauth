@@ -1,5 +1,7 @@
 package org.contacomigo.core.oauth.service.util;
 
+import java.util.UUID;
+
 import org.apache.commons.lang3.RandomStringUtils;
 
 /**
@@ -37,5 +39,14 @@ public final class RandomUtil {
     */
     public static String generateResetKey() {
         return RandomStringUtils.randomNumeric(DEF_COUNT);
+    }
+
+    /**
+    * Generate a UUID key.
+    *
+    * @return the generated UUID key
+    */
+    public static String generateUUID() {
+        return UUID.randomUUID().toString().replaceAll("-", "");
     }
 }

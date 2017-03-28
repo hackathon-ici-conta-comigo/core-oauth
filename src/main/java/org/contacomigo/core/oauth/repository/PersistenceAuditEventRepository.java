@@ -12,7 +12,7 @@ import java.util.List;
 /**
  * Spring Data JPA repository for the PersistentAuditEvent entity.
  */
-public interface PersistenceAuditEventRepository extends JpaRepository<PersistentAuditEvent, Long> {
+public interface PersistenceAuditEventRepository extends JpaRepository<PersistentAuditEvent, String> {
 
     List<PersistentAuditEvent> findByPrincipal(String principal);
 

@@ -1,6 +1,7 @@
 package org.contacomigo.core.oauth.domain;
 
 import org.contacomigo.core.oauth.config.Constants;
+import org.contacomigo.core.oauth.service.util.RandomUtil;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.BatchSize;
@@ -29,8 +30,7 @@ public class User extends AbstractAuditingEntity implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private String id = RandomUtil.generateUUID();
 
     @NotNull
     @Pattern(regexp = Constants.LOGIN_REGEX)
@@ -91,11 +91,11 @@ public class User extends AbstractAuditingEntity implements Serializable {
     @BatchSize(size = 20)
     private Set<Authority> authorities = new HashSet<>();
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 

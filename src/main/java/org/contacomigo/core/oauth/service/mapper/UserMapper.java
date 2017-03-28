@@ -31,7 +31,7 @@ public interface UserMapper {
 
     List<User> userDTOsToUsers(List<UserDTO> userDTOs);
 
-    default User userFromId(Long id) {
+    default User userFromId(String id) {
         if (id == null) {
             return null;
         }

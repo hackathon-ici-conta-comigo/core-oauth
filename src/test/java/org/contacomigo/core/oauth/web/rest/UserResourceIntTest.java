@@ -5,6 +5,7 @@ import org.contacomigo.core.oauth.domain.User;
 import org.contacomigo.core.oauth.repository.UserRepository;
 import org.contacomigo.core.oauth.service.MailService;
 import org.contacomigo.core.oauth.service.UserService;
+import org.contacomigo.core.oauth.service.util.RandomUtil;
 import org.contacomigo.core.oauth.web.rest.errors.ExceptionTranslator;
 import org.contacomigo.core.oauth.web.rest.vm.ManagedUserVM;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -26,6 +27,7 @@ import javax.persistence.EntityManager;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
@@ -171,7 +173,7 @@ public class UserResourceIntTest {
         Set<String> authorities = new HashSet<>();
         authorities.add("ROLE_USER");
         ManagedUserVM managedUserVM = new ManagedUserVM(
-            1L,
+    		RandomUtil.generateUUID(),
             DEFAULT_LOGIN,
             DEFAULT_PASSWORD,
             DEFAULT_FIRSTNAME,
