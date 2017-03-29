@@ -81,7 +81,7 @@ public class UserService {
             });
     }
 
-    public User createUser(String login, String password, String firstName, String lastName, String email,
+    public User createUser(String login, String password, String name, String email,
         String imageUrl, String langKey) {
 
         User newUser = new User();
@@ -91,8 +91,7 @@ public class UserService {
         newUser.setLogin(login);
         // new user gets initially a generated password
         newUser.setPassword(encryptedPassword);
-        newUser.setFirstName(firstName);
-        newUser.setLastName(lastName);
+        newUser.setName(name);
         newUser.setEmail(email);
         newUser.setImageUrl(imageUrl);
         newUser.setLangKey(langKey);
@@ -110,8 +109,7 @@ public class UserService {
     public User createUser(UserDTO userDTO) {
         User user = new User();
         user.setLogin(userDTO.getLogin());
-        user.setFirstName(userDTO.getFirstName());
-        user.setLastName(userDTO.getLastName());
+        user.setName(userDTO.getName());
         user.setEmail(userDTO.getEmail());
         user.setImageUrl(userDTO.getImageUrl());
         if (userDTO.getLangKey() == null) {
@@ -139,15 +137,13 @@ public class UserService {
     /**
      * Update basic information (first name, last name, email, language) for the current user.
      *
-     * @param firstName first name of user
-     * @param lastName last name of user
+     * @param name first name of user
      * @param email email id of user
      * @param langKey language key
      */
-    public void updateUser(String firstName, String lastName, String email, String langKey) {
+    public void updateUser(String name, String email, String langKey) {
         userRepository.findOneByLogin(SecurityUtils.getCurrentUserLogin()).ifPresent(user -> {
-            user.setFirstName(firstName);
-            user.setLastName(lastName);
+            user.setName(name);
             user.setEmail(email);
             user.setLangKey(langKey);
             log.debug("Changed Information for User: {}", user);
@@ -165,8 +161,7 @@ public class UserService {
             .findOne(userDTO.getId()))
             .map(user -> {
                 user.setLogin(userDTO.getLogin());
-                user.setFirstName(userDTO.getFirstName());
-                user.setLastName(userDTO.getLastName());
+                user.setName(userDTO.getName());
                 user.setEmail(userDTO.getEmail());
                 user.setImageUrl(userDTO.getImageUrl());
                 user.setActivated(userDTO.isActivated());

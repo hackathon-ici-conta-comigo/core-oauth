@@ -1,16 +1,16 @@
 package org.contacomigo.core.oauth.service.dto;
 
-import org.contacomigo.core.oauth.config.Constants;
-
-import org.contacomigo.core.oauth.domain.Authority;
-import org.contacomigo.core.oauth.domain.User;
-
-import org.hibernate.validator.constraints.Email;
-
-import javax.validation.constraints.*;
 import java.time.ZonedDateTime;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
+
+import org.contacomigo.core.oauth.config.Constants;
+import org.contacomigo.core.oauth.domain.Authority;
+import org.contacomigo.core.oauth.domain.User;
+import org.hibernate.validator.constraints.Email;
 
 /**
  * A DTO representing a user, with his authorities.
@@ -23,11 +23,8 @@ public class UserDTO {
     @Size(min = 1, max = 50)
     private String login;
 
-    @Size(max = 50)
-    private String firstName;
-
-    @Size(max = 50)
-    private String lastName;
+    @Size(max = 100)
+    private String name;
 
     @Email
     @Size(min = 5, max = 100)
@@ -56,22 +53,21 @@ public class UserDTO {
     }
 
     public UserDTO(User user) {
-        this(user.getId(), user.getLogin(), user.getFirstName(), user.getLastName(),
+        this(user.getId(), user.getLogin(), user.getName(),
             user.getEmail(), user.getActivated(), user.getImageUrl(), user.getLangKey(),
             user.getCreatedBy(), user.getCreatedDate(), user.getLastModifiedBy(), user.getLastModifiedDate(),
             user.getAuthorities().stream().map(Authority::getName)
                 .collect(Collectors.toSet()));
     }
 
-    public UserDTO(String id, String login, String firstName, String lastName,
+    public UserDTO(String id, String login, String name,
         String email, boolean activated, String imageUrl, String langKey,
         String createdBy, ZonedDateTime createdDate, String lastModifiedBy, ZonedDateTime lastModifiedDate,
         Set<String> authorities) {
 
         this.id = id;
         this.login = login;
-        this.firstName = firstName;
-        this.lastName = lastName;
+        this.name = name;
         this.email = email;
         this.activated = activated;
         this.imageUrl = imageUrl;
@@ -99,12 +95,8 @@ public class UserDTO {
         this.login = login;
     }
 
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
+    public String getName() {
+        return name;
     }
 
     public String getEmail() {
@@ -151,8 +143,7 @@ public class UserDTO {
     public String toString() {
         return "UserDTO{" +
             "login='" + login + '\'' +
-            ", firstName='" + firstName + '\'' +
-            ", lastName='" + lastName + '\'' +
+            ", name='" + name + '\'' +
             ", email='" + email + '\'' +
             ", imageUrl='" + imageUrl + '\'' +
             ", activated=" + activated +

@@ -105,8 +105,7 @@ public class AccountResourceIntTest {
 
         User user = new User();
         user.setLogin("test");
-        user.setFirstName("john");
-        user.setLastName("doe");
+        user.setName("john");
         user.setEmail("john.doe@jhipster.com");
         user.setImageUrl("http://placehold.it/50x50");
         user.setLangKey("en");
@@ -118,8 +117,7 @@ public class AccountResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.login").value("test"))
-            .andExpect(jsonPath("$.firstName").value("john"))
-            .andExpect(jsonPath("$.lastName").value("doe"))
+            .andExpect(jsonPath("$.name").value("john"))
             .andExpect(jsonPath("$.email").value("john.doe@jhipster.com"))
             .andExpect(jsonPath("$.imageUrl").value("http://placehold.it/50x50"))
             .andExpect(jsonPath("$.langKey").value("en"))
@@ -142,8 +140,7 @@ public class AccountResourceIntTest {
             null,                   // id
             "joe",                  // login
             "password",             // password
-            "Joe",                  // firstName
-            "Shmoe",                // lastName
+            "Joe Shmoe",            // name
             "joe@example.com",      // e-mail
             true,                   // activated
             "http://placehold.it/50x50", //imageUrl
@@ -171,8 +168,7 @@ public class AccountResourceIntTest {
             null,                   // id
             "funky-log!n",          // login <-- invalid
             "password",             // password
-            "Funky",                // firstName
-            "One",                  // lastName
+            "Funky One",            // name
             "funky@example.com",    // e-mail
             true,                   // activated
             "http://placehold.it/50x50", //imageUrl
@@ -200,8 +196,7 @@ public class AccountResourceIntTest {
             null,               // id
             "bob",              // login
             "password",         // password
-            "Bob",              // firstName
-            "Green",            // lastName
+            "Bob Green",        // name
             "invalid",          // e-mail <-- invalid
             true,               // activated
             "http://placehold.it/50x50", //imageUrl
@@ -229,8 +224,7 @@ public class AccountResourceIntTest {
             null,               // id
             "bob",              // login
             "123",              // password with only 3 digits
-            "Bob",              // firstName
-            "Green",            // lastName
+            "Bob Green",        // name
             "bob@example.com",  // e-mail
             true,               // activated
             "http://placehold.it/50x50", //imageUrl
@@ -259,8 +253,7 @@ public class AccountResourceIntTest {
             null,                   // id
             "alice",                // login
             "password",             // password
-            "Alice",                // firstName
-            "Something",            // lastName
+            "Alice Something",      // name
             "alice@example.com",    // e-mail
             true,                   // activated
             "http://placehold.it/50x50", //imageUrl
@@ -272,7 +265,7 @@ public class AccountResourceIntTest {
             new HashSet<>(Arrays.asList(AuthoritiesConstants.USER)));
 
         // Duplicate login, different email
-        ManagedUserVM duplicatedUser = new ManagedUserVM(validUser.getId(), validUser.getLogin(), validUser.getPassword(), validUser.getFirstName(), validUser.getLastName(),
+        ManagedUserVM duplicatedUser = new ManagedUserVM(validUser.getId(), validUser.getLogin(), validUser.getPassword(), validUser.getName(),
             "alicejr@example.com", true, validUser.getImageUrl(), validUser.getLangKey(), validUser.getCreatedBy(), validUser.getCreatedDate(), validUser.getLastModifiedBy(), validUser.getLastModifiedDate(), validUser.getAuthorities());
 
         // Good user
@@ -301,8 +294,7 @@ public class AccountResourceIntTest {
             null,                   // id
             "john",                 // login
             "password",             // password
-            "John",                 // firstName
-            "Doe",                  // lastName
+            "John Doe",             // name
             "john@example.com",     // e-mail
             true,                   // activated
             "http://placehold.it/50x50", //imageUrl
@@ -314,7 +306,7 @@ public class AccountResourceIntTest {
             new HashSet<>(Arrays.asList(AuthoritiesConstants.USER)));
 
         // Duplicate e-mail, different login
-        ManagedUserVM duplicatedUser = new ManagedUserVM(validUser.getId(), "johnjr", validUser.getPassword(), validUser.getLogin(), validUser.getLastName(),
+        ManagedUserVM duplicatedUser = new ManagedUserVM(validUser.getId(), "johnjr", validUser.getPassword(), validUser.getLogin(),
             validUser.getEmail(), true, validUser.getImageUrl(), validUser.getLangKey(), validUser.getCreatedBy(), validUser.getCreatedDate(), validUser.getLastModifiedBy(), validUser.getLastModifiedDate(), validUser.getAuthorities());
 
         // Good user
@@ -342,8 +334,7 @@ public class AccountResourceIntTest {
             null,                   // id
             "badguy",               // login
             "password",             // password
-            "Bad",                  // firstName
-            "Guy",                  // lastName
+            "Bad Guy",              // name
             "badguy@example.com",   // e-mail
             true,                   // activated
             "http://placehold.it/50x50", //imageUrl
@@ -372,8 +363,7 @@ public class AccountResourceIntTest {
         UserDTO invalidUser = new UserDTO(
             null,                   // id
             "funky-log!n",          // login <-- invalid
-            "Funky",                // firstName
-            "One",                  // lastName
+            "Funky One",            // name
             "funky@example.com",    // e-mail
             true,                   // activated
             "http://placehold.it/50x50", //imageUrl

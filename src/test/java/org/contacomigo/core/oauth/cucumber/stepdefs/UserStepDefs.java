@@ -39,9 +39,9 @@ public class UserStepDefs extends StepDefs {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE));
     }
 
-    @Then("^his last name is '(.*)'$")
-    public void his_last_name_is(String lastName) throws Throwable {
-        actions.andExpect(jsonPath("$.lastName").value(lastName));
+    @Then("^his name is '(.*)'$")
+    public void his_name_is(String name) throws Throwable {
+        actions.andExpect(jsonPath("$.name").value(name));
     }
 
 }
