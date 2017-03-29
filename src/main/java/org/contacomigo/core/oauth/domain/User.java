@@ -3,7 +3,6 @@ package org.contacomigo.core.oauth.domain;
 import java.io.Serializable;
 import java.time.ZonedDateTime;
 import java.util.HashSet;
-import java.util.Locale;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -14,10 +13,8 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
-import org.contacomigo.core.oauth.config.Constants;
 import org.contacomigo.core.oauth.service.util.RandomUtil;
 import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.Cache;
@@ -39,12 +36,6 @@ public class User extends AbstractAuditingEntity implements Serializable {
     @Id
     private String id = RandomUtil.generateUUID();
 
-    @NotNull
-    @Pattern(regexp = Constants.LOGIN_REGEX)
-    @Size(min = 1, max = 50)
-    @Column(length = 50, unique = true, nullable = false)
-    private String login;
-
     @JsonIgnore
     @NotNull
     @Size(min = 60, max = 60)
@@ -55,6 +46,7 @@ public class User extends AbstractAuditingEntity implements Serializable {
     @Column(name = "name", length = 100)
     private String name;
 
+    @NotNull
     @Email
     @Size(min = 5, max = 100)
     @Column(length = 100, unique = true)
@@ -100,15 +92,6 @@ public class User extends AbstractAuditingEntity implements Serializable {
 
     public void setId(String id) {
         this.id = id;
-    }
-
-    public String getLogin() {
-        return login;
-    }
-
-    //Lowercase the login before saving it in database
-    public void setLogin(String login) {
-        this.login = login.toLowerCase(Locale.ENGLISH);
     }
 
     public String getPassword() {
@@ -202,18 +185,17 @@ public class User extends AbstractAuditingEntity implements Serializable {
 
         User user = (User) o;
 
-        return login.equals(user.login);
+        return email.equals(user.email);
     }
 
     @Override
     public int hashCode() {
-        return login.hashCode();
+        return email.hashCode();
     }
 
     @Override
     public String toString() {
         return "User{" +
-            "login='" + login + '\'' +
             ", name='" + name + '\'' +
             ", email='" + email + '\'' +
             ", imageUrl='" + imageUrl + '\'' +

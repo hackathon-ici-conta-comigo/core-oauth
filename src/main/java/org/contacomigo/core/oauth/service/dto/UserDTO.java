@@ -4,10 +4,8 @@ import java.time.ZonedDateTime;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
-import org.contacomigo.core.oauth.config.Constants;
 import org.contacomigo.core.oauth.domain.Authority;
 import org.contacomigo.core.oauth.domain.User;
 import org.hibernate.validator.constraints.Email;
@@ -18,10 +16,6 @@ import org.hibernate.validator.constraints.Email;
 public class UserDTO {
 
     private String id;
-
-    @Pattern(regexp = Constants.LOGIN_REGEX)
-    @Size(min = 1, max = 50)
-    private String login;
 
     @Size(max = 100)
     private String name;
@@ -53,20 +47,19 @@ public class UserDTO {
     }
 
     public UserDTO(User user) {
-        this(user.getId(), user.getLogin(), user.getName(),
+        this(user.getId(), user.getName(),
             user.getEmail(), user.getActivated(), user.getImageUrl(), user.getLangKey(),
             user.getCreatedBy(), user.getCreatedDate(), user.getLastModifiedBy(), user.getLastModifiedDate(),
             user.getAuthorities().stream().map(Authority::getName)
                 .collect(Collectors.toSet()));
     }
 
-    public UserDTO(String id, String login, String name,
+    public UserDTO(String id, String name,
         String email, boolean activated, String imageUrl, String langKey,
         String createdBy, ZonedDateTime createdDate, String lastModifiedBy, ZonedDateTime lastModifiedDate,
         Set<String> authorities) {
 
         this.id = id;
-        this.login = login;
         this.name = name;
         this.email = email;
         this.activated = activated;
@@ -85,14 +78,6 @@ public class UserDTO {
 
     public void setId(String id) {
         this.id = id;
-    }
-
-    public String getLogin() {
-        return login;
-    }
-
-    public void setLogin(String login) {
-        this.login = login;
     }
 
     public String getName() {
@@ -142,7 +127,6 @@ public class UserDTO {
     @Override
     public String toString() {
         return "UserDTO{" +
-            "login='" + login + '\'' +
             ", name='" + name + '\'' +
             ", email='" + email + '\'' +
             ", imageUrl='" + imageUrl + '\'' +
