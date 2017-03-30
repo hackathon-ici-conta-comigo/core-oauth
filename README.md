@@ -4,7 +4,7 @@ This application was generated using JHipster 4.1.1, you can find documentation 
 This is a "uaa" application intended to be part of a microservice architecture, please refer to the [Doing microservices with JHipster][] page of the documentation for more information.
 
 This is also a JHipster User Account and Authentication (UAA) Server, refer to [Using UAA for Microservice Security][] for details on how to secure JHipster microservices with OAuth2.
-This application is configured for Service Discovery and Configuration with . On launch, it will refuse to start if it is not able to connect to .
+This application is configured for Service Discovery and Configuration with the JHipster-Registry. On launch, it will refuse to start if it is not able to connect to the JHipster-Registry at [http://localhost:8761](http://localhost:8761). For more information, read our documentation on [Service Discovery and Configuration with the JHipster-Registry][].
 
 ## Development
 
@@ -85,6 +85,7 @@ To configure CI for your project, run the ci-cd sub-generator (`yo jhipster:ci-c
 [JHipster 4.1.1 archive]: https://jhipster.github.io/documentation-archive/v4.1.1
 [Doing microservices with JHipster]: https://jhipster.github.io/documentation-archive/v4.1.1/microservices-architecture/
 [Using UAA for Microservice Security]: https://jhipster.github.io/documentation-archive/v4.1.1/using-uaa/[Using JHipster in development]: https://jhipster.github.io/documentation-archive/v4.1.1/development/
+[Service Discovery and Configuration with the JHipster-Registry]: https://jhipster.github.io/documentation-archive/v4.1.1/microservices-architecture/#jhipster-registry
 [Using Docker and Docker-Compose]: https://jhipster.github.io/documentation-archive/v4.1.1/docker-compose
 [Using JHipster in production]: https://jhipster.github.io/documentation-archive/v4.1.1/production/
 [Running tests page]: https://jhipster.github.io/documentation-archive/v4.1.1/running-tests/
