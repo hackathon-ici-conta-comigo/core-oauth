@@ -195,7 +195,7 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public Optional<User> getUserWithAuthoritiesByLogin(String login) {
+    public Optional<User> getUserWithAuthoritiesByEmail(String login) {
         return userRepository.findOneWithAuthoritiesByEmail(login);
     }
 
