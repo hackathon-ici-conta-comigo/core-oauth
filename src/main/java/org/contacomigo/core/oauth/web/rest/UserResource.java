@@ -101,7 +101,7 @@ public class UserResource {
                 .headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "emailexists", "Email already in use"))
                 .body(null);
         } else {
-            User newUser = userService.createUser(managedUserVM);
+            User newUser = userService.createUserWithAddress(managedUserVM);
             mailService.sendCreationEmail(newUser);
             return ResponseEntity.created(new URI("/api/users/" + newUser.getEmail()))
                 .headers(HeaderUtil.createAlert( "userManagement.created", newUser.getEmail()))

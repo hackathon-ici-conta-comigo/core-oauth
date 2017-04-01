@@ -8,6 +8,7 @@ import org.contacomigo.core.oauth.repository.UserRepository;
 import org.contacomigo.core.oauth.security.AuthoritiesConstants;
 import org.contacomigo.core.oauth.security.SecurityUtils;
 import org.contacomigo.core.oauth.service.util.RandomUtil;
+import org.contacomigo.core.oauth.web.rest.vm.ManagedUserVM;
 import org.contacomigo.core.oauth.service.dto.UserDTO;
 
 import org.slf4j.Logger;
@@ -36,11 +37,14 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
 
     private final AuthorityRepository authorityRepository;
+    
+    private final AddressService addressService;
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, AuthorityRepository authorityRepository) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, AuthorityRepository authorityRepository, AddressService addressService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.authorityRepository = authorityRepository;
+        this.addressService = addressService;
     }
 
     public Optional<User> activateRegistration(String key) {
@@ -79,6 +83,20 @@ public class UserService {
                 user.setResetDate(ZonedDateTime.now());
                 return user;
             });
+    }
+    
+    public User createUserWithAddress(ManagedUserVM managedUserVM) {
+    	final User user = createUser(managedUserVM.getPassword(), managedUserVM.getName(), managedUserVM.getEmail(), managedUserVM.getImageUrl(), managedUserVM.getLangKey());
+    	
+    	if (!managedUserVM.getAddresses().isEmpty()) {
+    		managedUserVM.getAddresses().forEach(address -> {
+    			address.setUser(user);
+    			addressService.save(address);
+    		});
+            log.debug("Created Addresses for User: {}", user);
+    	}
+    	
+    	return user;
     }
 
     public User createUser(String password, String name, String email,

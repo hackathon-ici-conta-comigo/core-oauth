@@ -12,12 +12,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
 import org.contacomigo.core.oauth.OauthApp;
+import org.contacomigo.core.oauth.domain.Address;
 import org.contacomigo.core.oauth.domain.Authority;
 import org.contacomigo.core.oauth.domain.User;
+import org.contacomigo.core.oauth.repository.AddressRepository;
 import org.contacomigo.core.oauth.repository.AuthorityRepository;
 import org.contacomigo.core.oauth.repository.UserRepository;
 import org.contacomigo.core.oauth.security.AuthoritiesConstants;
@@ -48,6 +51,9 @@ public class AccountResourceIntTest {
 
     @Autowired
     private UserRepository userRepository;
+    
+    @Autowired
+    private AddressRepository addressRepository;
 
     @Autowired
     private AuthorityRepository authorityRepository;
@@ -160,6 +166,46 @@ public class AccountResourceIntTest {
 
         Optional<User> user = userRepository.findOneByEmail("joe@example.com");
         assertThat(user.isPresent()).isTrue();
+    }
+    
+    @Test
+    @Transactional
+    public void testRegisterWithAddressValid() throws Exception {
+    	ManagedUserVM validUser = new ManagedUserVM(
+    			null,                   // id
+    			"password",             // password
+    			"Joe Shmoe",            // name
+    			"joe@example.com",      // e-mail
+    			true,                   // activated
+    			"http://placehold.it/50x50", //imageUrl
+    			"pt-br",                   // langKey
+    			null,                   // createdBy
+    			null,                   // createdDate
+    			null,                   // lastModifiedBy
+    			null,                   // lastModifiedDate
+    			new HashSet<>(Arrays.asList(AuthoritiesConstants.USER)));
+    	
+    	validUser.getAddresses().add(
+			new Address()
+			.city("Porto Alegre")
+			.country("Brasil")
+			.street("Perimetral II")
+			.number("1551")
+			.complement("123B")
+    	);
+    	
+    	restMvc.perform(
+    			post("/api/register")
+    			.contentType(TestUtil.APPLICATION_JSON_UTF8)
+    			.content(TestUtil.convertObjectToJsonBytes(validUser)))
+    	.andExpect(status().isCreated());
+    	
+    	Optional<User> user = userRepository.findOneByEmail("joe@example.com");
+    	assertThat(user.isPresent()).isTrue();
+    	
+    	List<Address> addresses = addressRepository.findByUserEmail(user.get().getEmail());
+    	assertThat(addresses).hasSize(1);
+    	assertThat(addresses.get(0)).isEqualToIgnoringGivenFields(validUser.getAddresses().get(0), "user");
     }
 
     @Test

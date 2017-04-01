@@ -14,5 +14,8 @@ public interface AddressRepository extends JpaRepository<Address,String> {
 
     @Query("select address from Address address where address.user.email = ?#{principal.username}")
     List<Address> findByUserIsCurrentUser();
+    
+    @Query("select address from Address address where address.user.email = ?1")
+    List<Address> findByUserEmail(String email);
 
 }
