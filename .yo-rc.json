@@ -28,6 +28,7 @@
     ],
     "jhiPrefix": "jhi",
     "skipClient": true,
-    "clientPackageManager": "npm"
+    "clientPackageManager": "npm",
+    "herokuAppName": "oauth-contacomigo"
   }
 }
