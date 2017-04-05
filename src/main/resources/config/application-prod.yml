@@ -15,7 +15,7 @@
 
 eureka:
     instance:
-        prefer-ip-address: false
+        prefer-ip-address: true
     client:
         service-url:
             defaultZone: ${JHIPSTER_REGISTRY_URL}/eureka/
@@ -28,7 +28,7 @@ spring:
             enabled: false
     datasource:
         type: com.zaxxer.hikari.HikariDataSource
-        url: ${CLEARDB_DATABASE_URL}
+        url: jdbc:${CLEARDB_DATABASE_URL}
         username: ${JDBC_DATABASE_USERNAME}
         password: ${JDBC_DATABASE_PASSWORD}
         hikari:
