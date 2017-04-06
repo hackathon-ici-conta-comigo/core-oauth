@@ -3,16 +3,15 @@ language: java
 jdk: oraclejdk8
 cache:
   directories: $HOME/.m2
+env:
+  - HEROKU_API_KEY: 8a15a255-1102-4645-a488-87e13586af0b
 sudo: false
 addons:
   apt:
     packages: oracle-java8-installer
-env:
-  - HEROKU_API_KEY: 8a15a255-1102-4645-a488-87e13586af0b
-  - spring.profiles.default: prod
 script:
-  - chmod +x mvnw #- ./mvnw clean test
-  - ./mvnw com.heroku.sdk:heroku-maven-plugin:1.1.1:deploy-war -DskipTests -Pprod -Dheroku.appName=oauth-contacomigo
+  - chmod +x mvnw #- ./mvnw clean test #- ./mvnw com.heroku.sdk:heroku-maven-plugin:1.1.1:deploy-war -DskipTests -Pprod -Dheroku.appName=oauth-contacomigo
+  - heroku deploy:jar target/*.jar --app oauth-contacomigo
 notifications:
   webhooks:
     on_success: change
