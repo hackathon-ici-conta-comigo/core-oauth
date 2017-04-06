@@ -17,11 +17,6 @@ script:
   - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD" registry.heroku.com
   - docker tag core-oauth registry.heroku.com/oauth-contacomigo/web
   - docker push registry.heroku.com/oauth-contacomigo/web
-  #docker run -e JHIPSTER_REGISTRY_URL=https://admin:password@registry-contacomigo.herokuapp.com \
-  #-e CLEARDB_DATABASE_URL=mysql://b9030b17399336:194d1a02@us-cdbr-iron-east-03.cleardb.net/heroku_8356a8dddcb102e?reconnect=true \
-  #-e JDBC_DATABASE_PASSWORD=contacomigo \
-  #-e JDBC_DATABASE_USERNAME=contacomigo \
-  #core-oauth
 notifications:
   webhooks:
     on_success: change
