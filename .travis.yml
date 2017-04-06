@@ -13,7 +13,9 @@ addons:
 script:
   - chmod +x mvnw #- ./mvnw clean test #- ./mvnw com.heroku.sdk:heroku-maven-plugin:1.1.1:deploy-war -DskipTests -Pprod -Dheroku.appName=oauth-contacomigo
   - ./mvnw clean package -Pprod -DskipTests docker:build
-  - heroku deploy:jar target/*.jar --app oauth-contacomigo
+  - cp target/docker/Dockerfile target/
+  - cd target
+  - heroku container:push web -a oauth-contacomigo
   #docker run -e JHIPSTER_REGISTRY_URL=https://admin:password@registry-contacomigo.herokuapp.com \
   #-e CLEARDB_DATABASE_URL=mysql://b9030b17399336:194d1a02@us-cdbr-iron-east-03.cleardb.net/heroku_8356a8dddcb102e?reconnect=true \
   #-e JDBC_DATABASE_PASSWORD=contacomigo \
