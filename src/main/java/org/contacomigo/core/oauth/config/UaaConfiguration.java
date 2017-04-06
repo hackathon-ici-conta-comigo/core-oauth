@@ -139,7 +139,7 @@ public class UaaConfiguration extends AuthorizationServerConfigurerAdapter {
         JwtAccessTokenConverter converter = new JwtAccessTokenConverter();
         KeyPair keyPair = new KeyStoreKeyFactory(
              new ClassPathResource("keystore.jks"), "password".toCharArray())
-             .getKeyPair("selfsigned");
+             .getKeyPair("password");
         converter.setKeyPair(keyPair);
         return converter;
     }
