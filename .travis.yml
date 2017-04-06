@@ -14,6 +14,7 @@ script:
   - chmod +x mvnw #- ./mvnw clean test #- ./mvnw com.heroku.sdk:heroku-maven-plugin:1.1.1:deploy-war -DskipTests -Pprod -Dheroku.appName=oauth-contacomigo
   - ./mvnw clean package -Pprod -DskipTests docker:build
   - cd target/docker/
+  - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
   - docker tag core-oauth registry.heroku.com/oauth-contacomigo/web
   - docker push registry.heroku.com/oauth-contacomigo/web
   #docker run -e JHIPSTER_REGISTRY_URL=https://admin:password@registry-contacomigo.herokuapp.com \
