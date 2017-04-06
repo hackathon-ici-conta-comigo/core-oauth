@@ -4,7 +4,7 @@ jdk: oraclejdk8
 cache:
   directories: $HOME/.m2
 env:
-  - HEROKU_API_KEY: 8a15a255-1102-4645-a488-87e13586af0b
+  - HEROKU_API_KEY: $HEROKU_API_KEY
 sudo: required
 services: docker
 addons:
