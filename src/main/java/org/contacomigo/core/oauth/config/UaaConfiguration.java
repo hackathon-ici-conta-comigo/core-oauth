@@ -1,14 +1,16 @@
 package org.contacomigo.core.oauth.config;
 
+import java.util.Arrays;
+
+import javax.servlet.http.HttpServletResponse;
+
 import org.contacomigo.core.oauth.security.AuthoritiesConstants;
-
-import io.github.jhipster.config.JHipsterProperties;
-
+import org.contacomigo.core.oauth.service.util.KeyPairUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.env.Environment;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -23,12 +25,11 @@ import org.springframework.security.oauth2.config.annotation.web.configurers.Res
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
-import org.springframework.security.oauth2.provider.token.store.KeyStoreKeyFactory;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.filter.CorsFilter;
 
-import javax.servlet.http.HttpServletResponse;
-import java.security.KeyPair;
+import io.github.jhipster.config.JHipsterConstants;
+import io.github.jhipster.config.JHipsterProperties;
 
 @Configuration
 @EnableAuthorizationServer
@@ -87,9 +88,11 @@ public class UaaConfiguration extends AuthorizationServerConfigurerAdapter {
     }
 
     private final JHipsterProperties jHipsterProperties;
-
-    public UaaConfiguration(JHipsterProperties jHipsterProperties) {
+    private final Environment env;
+    
+    public UaaConfiguration(JHipsterProperties jHipsterProperties, Environment env) {
         this.jHipsterProperties = jHipsterProperties;
+        this.env = env;
     }
 
     @Override
@@ -136,14 +139,12 @@ public class UaaConfiguration extends AuthorizationServerConfigurerAdapter {
      */
     @Bean
     public JwtAccessTokenConverter jwtAccessTokenConverter() {
-        JwtAccessTokenConverter converter = new JwtAccessTokenConverter();
-        KeyPair keyPair = new KeyStoreKeyFactory(
-             new ClassPathResource("keystore.jks"), "password".toCharArray())
-             .getKeyPair("password");
-        converter.setKeyPair(keyPair);
-        return converter;
+    	if (Arrays.asList(env.getActiveProfiles()).contains(JHipsterConstants.SPRING_PROFILE_DEVELOPMENT)) {
+    		return KeyPairUtils.jwtAccessTokenConverter();
+    	}
+		return KeyPairUtils.jwtAccessTokenConverter("keystore.jks", "password");
     }
-
+    
     @Override
     public void configure(AuthorizationServerSecurityConfigurer oauthServer) throws Exception {
         oauthServer.tokenKeyAccess("permitAll()").checkTokenAccess(
