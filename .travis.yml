@@ -6,17 +6,13 @@ cache:
 env:
   - HEROKU_API_KEY: $HEROKU_API_KEY
 sudo: required
-services: docker
 addons:
   apt:
     packages: oracle-java8-installer
 script:
   - chmod +x mvnw #- ./mvnw clean test
-  - ./mvnw clean package -Pprod -DskipTests docker:build
-  - cd target/docker/
-  - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD" registry.heroku.com
-  - docker tag core-oauth registry.heroku.com/oauth-contacomigo/web
-  - docker push registry.heroku.com/oauth-contacomigo/web
+  - ./mvnw clean package -Pprod -DskipTests
+  - git push heroku master
 notifications:
   webhooks:
     on_success: change
