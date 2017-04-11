@@ -86,7 +86,7 @@ public class UserService {
     }
     
     public User createUserWithAddress(ManagedUserVM managedUserVM) {
-    	final User user = createUser(managedUserVM.getPassword(), managedUserVM.getName(), managedUserVM.getEmail(), managedUserVM.getImageUrl(), managedUserVM.getLangKey());
+    	final User user = createUser(managedUserVM);
     	
     	if (!managedUserVM.getAddresses().isEmpty()) {
     		managedUserVM.getAddresses().forEach(address -> {
