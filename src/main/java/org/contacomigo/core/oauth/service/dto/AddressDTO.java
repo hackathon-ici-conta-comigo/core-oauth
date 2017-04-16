@@ -1,61 +1,47 @@
-package org.contacomigo.core.oauth.domain;
+package org.contacomigo.core.oauth.service.dto;
 
 import java.util.Objects;
 
-import javax.persistence.Column;
-import javax.persistence.Embedded;
-import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.contacomigo.core.oauth.domain.Address;
+import org.contacomigo.core.oauth.domain.Location;
 
-/**
- * A Address.
- */
-@Entity
-@Table(name = "address")
-@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-public class Address extends UUIDEntity {
-
-    private static final long serialVersionUID = 1L;
-
-    @NotNull
-    @Column(name = "street", nullable = false)
+public class AddressDTO {
+	private String id;
+	
+	@NotNull
     private String street;
-
-    @Column(name = "number")
+    
     private String number;
-
-    @Column(name = "complement")
+    
     private String complement;
 
     @NotNull
-    @Column(name = "country", nullable = false)
     private String country;
-
+    
     @NotNull
-    @Column(name = "city", nullable = false)
     private String city;
 
-    @ManyToOne
-    private User user;
-
-    @Embedded
     private Location location;
-
-    public Address id(String id) {
-        super.setId(id);
-        return this;
-    }
     
+    public AddressDTO() {}
+    
+    public AddressDTO(Address address) {
+    	id = address.getId();
+    	street = address.getStreet();
+    	number = address.getNumber();
+    	complement = address.getComplement();
+    	country = address.getCountry();
+    	city = address.getCity();
+    	location = address.getLocation();
+    }
+
     public String getStreet() {
         return street;
     }
 
-    public Address street(String street) {
+    public AddressDTO street(String street) {
         this.street = street;
         return this;
     }
@@ -68,7 +54,7 @@ public class Address extends UUIDEntity {
         return number;
     }
 
-    public Address number(String number) {
+    public AddressDTO number(String number) {
         this.number = number;
         return this;
     }
@@ -81,7 +67,7 @@ public class Address extends UUIDEntity {
         return complement;
     }
 
-    public Address complement(String complement) {
+    public AddressDTO complement(String complement) {
         this.complement = complement;
         return this;
     }
@@ -94,7 +80,7 @@ public class Address extends UUIDEntity {
         return country;
     }
 
-    public Address country(String country) {
+    public AddressDTO country(String country) {
         this.country = country;
         return this;
     }
@@ -107,7 +93,7 @@ public class Address extends UUIDEntity {
         return city;
     }
 
-    public Address city(String city) {
+    public AddressDTO city(String city) {
         this.city = city;
         return this;
     }
@@ -116,19 +102,6 @@ public class Address extends UUIDEntity {
         this.city = city;
     }
 
-    public User getUser() {
-        return user;
-    }
-
-    public Address user(User user) {
-        this.user = user;
-        return this;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-    
     public Location getLocation() {
 		return location;
 	}
@@ -137,11 +110,30 @@ public class Address extends UUIDEntity {
 		this.location = location;
 	}
 
-    public Address location(Location location) {
+    public AddressDTO location(Location location) {
         this.location = location;
         return this;
     }
     
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+	
+	public Address toAddress() {
+		return new Address()
+			.id(id)
+			.city(city)
+			.complement(complement)
+			.country(country)
+			.location(location)
+			.number(number)
+			.street(street);
+	}
+
 	@Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -150,7 +142,7 @@ public class Address extends UUIDEntity {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        Address address = (Address) o;
+        AddressDTO address = (AddressDTO) o;
         if (address.getId() == null || getId() == null) {
             return false;
         }

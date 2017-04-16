@@ -45,11 +45,11 @@ public class UserDTO {
 
     private Set<String> authorities;
     
-    private List<Address> addresses;
+    private List<AddressDTO> addresses;
 
     public UserDTO() {
         // Empty constructor needed for MapStruct.
-    	this.addresses = new ArrayList<Address>();
+    	this.addresses = new ArrayList<AddressDTO>();
     }
 
     public UserDTO(User user) {
@@ -65,13 +65,13 @@ public class UserDTO {
     		String createdBy, ZonedDateTime createdDate, String lastModifiedBy, ZonedDateTime lastModifiedDate,
     		Set<String> authorities) {
     	this(id, name, email, activated, imageUrl, langKey, createdBy, createdDate, lastModifiedBy, lastModifiedDate,
-        authorities, new ArrayList<Address>());
+        authorities, new ArrayList<AddressDTO>());
     }
 
     public UserDTO(String id, String name,
         String email, boolean activated, String imageUrl, String langKey,
         String createdBy, ZonedDateTime createdDate, String lastModifiedBy, ZonedDateTime lastModifiedDate,
-        Set<String> authorities, List<Address> addresses) {
+        Set<String> authorities, List<AddressDTO> addresses) {
 
         this.id = id;
         this.name = name;
@@ -139,11 +139,11 @@ public class UserDTO {
         return authorities;
     }
 
-    public List<Address> getAddresses() {
+    public List<AddressDTO> getAddresses() {
 		return addresses;
 	}
 
-	public void setAddresses(List<Address> addresses) {
+	public void setAddresses(List<AddressDTO> addresses) {
 		this.addresses = addresses;
 	}
 

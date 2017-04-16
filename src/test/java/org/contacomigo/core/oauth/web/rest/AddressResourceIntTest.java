@@ -2,6 +2,8 @@ package org.contacomigo.core.oauth.web.rest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
+import static org.mockito.Matchers.anyObject;
+import static org.mockito.Mockito.doNothing;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -10,19 +12,30 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 
 import javax.persistence.EntityManager;
 
 import org.contacomigo.core.oauth.OauthApp;
 import org.contacomigo.core.oauth.domain.Address;
 import org.contacomigo.core.oauth.domain.Location;
+import org.contacomigo.core.oauth.domain.User;
 import org.contacomigo.core.oauth.repository.AddressRepository;
+import org.contacomigo.core.oauth.repository.UserRepository;
+import org.contacomigo.core.oauth.security.AuthoritiesConstants;
 import org.contacomigo.core.oauth.service.AddressService;
+import org.contacomigo.core.oauth.service.MailService;
+import org.contacomigo.core.oauth.service.UserService;
+import org.contacomigo.core.oauth.service.dto.AddressDTO;
 import org.contacomigo.core.oauth.web.rest.errors.ExceptionTranslator;
+import org.contacomigo.core.oauth.web.rest.vm.ManagedUserVM;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -62,8 +75,14 @@ public class AddressResourceIntTest {
     private static final Double DEFAULT_LATITUDE = 23254.67;
 
     @Autowired
+    private UserRepository userRepository;
+    
+    @Autowired
     private AddressRepository addressRepository;
 
+    @Autowired
+    private UserService userService;
+    
     @Autowired
     private AddressService addressService;
 
@@ -79,6 +98,9 @@ public class AddressResourceIntTest {
     @Autowired
     private EntityManager em;
 
+    @Mock
+    private MailService mockMailService;
+    
     private MockMvc restAddressMockMvc;
 
     private Address address;
@@ -86,8 +108,10 @@ public class AddressResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
+        doNothing().when(mockMailService).sendActivationEmail(anyObject());
+        AccountResource accountResource = new AccountResource(userRepository, userService, mockMailService);
         AddressResource addressResource = new AddressResource(addressService);
-        this.restAddressMockMvc = MockMvcBuilders.standaloneSetup(addressResource)
+        this.restAddressMockMvc = MockMvcBuilders.standaloneSetup(addressResource, accountResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
             .setMessageConverters(jacksonMessageConverter).build();
@@ -245,7 +269,8 @@ public class AddressResourceIntTest {
             .andExpect(jsonPath("$.number").value(DEFAULT_NUMBER.toString()))
             .andExpect(jsonPath("$.complement").value(DEFAULT_COMPLEMENT.toString()))
             .andExpect(jsonPath("$.country").value(DEFAULT_COUNTRY.toString()))
-            .andExpect(jsonPath("$.city").value(DEFAULT_CITY.toString()));
+            .andExpect(jsonPath("$.city").value(DEFAULT_CITY.toString()))
+            .andExpect(jsonPath("$.user").doesNotExist());
     }
 
     @Test
@@ -331,5 +356,55 @@ public class AddressResourceIntTest {
     @Transactional
     public void equalsVerifier() throws Exception {
         TestUtil.equalsVerifier(Address.class);
+    }
+    
+    @Test
+    @Transactional
+    public void testRegisterWithAddressValid() throws Exception {
+    	ManagedUserVM validUser = new ManagedUserVM(
+    			null,                   // id
+    			"password",             // password
+    			"Joe Shmoe",            // name
+    			"joe@example.com",      // e-mail
+    			true,                   // activated
+    			"http://placehold.it/50x50", //imageUrl
+    			"pt-br",                   // langKey
+    			null,                   // createdBy
+    			null,                   // createdDate
+    			null,                   // lastModifiedBy
+    			null,                   // lastModifiedDate
+    			new HashSet<>(Arrays.asList(AuthoritiesConstants.USER)));
+    	
+    	validUser.getAddresses().add(
+			new AddressDTO()
+			.city("Porto Alegre")
+			.country("Brasil")
+			.street("Perimetral II")
+			.number("1551")
+			.complement("123B")
+    	);
+    	
+    	restAddressMockMvc.perform(
+    			post("/api/register")
+    			.contentType(TestUtil.APPLICATION_JSON_UTF8)
+    			.content(TestUtil.convertObjectToJsonBytes(validUser)))
+    	.andExpect(status().isCreated());
+    	
+    	Optional<User> user = userRepository.findOneByEmail("joe@example.com");
+    	assertThat(user.isPresent()).isTrue();
+    	
+    	List<Address> addresses = addressRepository.findByUserEmail(user.get().getEmail());
+    	
+        // Get the address
+        restAddressMockMvc.perform(get("/api/addresses/{id}", addresses.get(0).getId()))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(jsonPath("$.id").value(addresses.get(0).getId()))
+            .andExpect(jsonPath("$.street").value(addresses.get(0).getStreet()))
+            .andExpect(jsonPath("$.number").value(addresses.get(0).getNumber()))
+            .andExpect(jsonPath("$.complement").value(addresses.get(0).getComplement()))
+            .andExpect(jsonPath("$.country").value(addresses.get(0).getCountry()))
+            .andExpect(jsonPath("$.city").value(addresses.get(0).getCity()))
+            .andExpect(jsonPath("$.user").doesNotExist());
     }
 }

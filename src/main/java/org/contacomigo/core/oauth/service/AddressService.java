@@ -35,7 +35,7 @@ public class AddressService {
     public Address save(Address address) {
         log.debug("Request to save Address : {}", address);
         if (address.getId() == null) {
-        	address.generateId();
+        	address.setId(address.generateId());
         }
         Address result = addressRepository.save(address);
         return result;
@@ -75,5 +75,9 @@ public class AddressService {
     public void delete(String id) {
         log.debug("Request to delete Address : {}", id);
         addressRepository.delete(id);
+    }
+    
+    public List<Address> findByUserEmail(String email) {
+    	return addressRepository.findByUserEmail(email);
     }
 }

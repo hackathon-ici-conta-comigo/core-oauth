@@ -1,16 +1,22 @@
 package org.contacomigo.core.oauth.service;
 
+import java.time.ZonedDateTime;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+
+import org.contacomigo.core.oauth.config.Constants;
+import org.contacomigo.core.oauth.domain.Address;
 import org.contacomigo.core.oauth.domain.Authority;
 import org.contacomigo.core.oauth.domain.User;
 import org.contacomigo.core.oauth.repository.AuthorityRepository;
-import org.contacomigo.core.oauth.config.Constants;
 import org.contacomigo.core.oauth.repository.UserRepository;
 import org.contacomigo.core.oauth.security.AuthoritiesConstants;
 import org.contacomigo.core.oauth.security.SecurityUtils;
+import org.contacomigo.core.oauth.service.dto.UserDTO;
 import org.contacomigo.core.oauth.service.util.RandomUtil;
 import org.contacomigo.core.oauth.web.rest.vm.ManagedUserVM;
-import org.contacomigo.core.oauth.service.dto.UserDTO;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -19,9 +25,6 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.time.ZonedDateTime;
-import java.util.*;
 
 /**
  * Service class for managing users.
@@ -89,7 +92,8 @@ public class UserService {
     	final User user = createUser(managedUserVM.getPassword(), managedUserVM.getName(), managedUserVM.getEmail(), managedUserVM.getImageUrl(), managedUserVM.getLangKey());
     	
     	if (!managedUserVM.getAddresses().isEmpty()) {
-    		managedUserVM.getAddresses().forEach(address -> {
+    		managedUserVM.getAddresses().forEach(addressDTO -> {
+    			Address address = addressDTO.toAddress();
     			address.setUser(user);
     			addressService.save(address);
     		});

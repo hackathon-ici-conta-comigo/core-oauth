@@ -9,6 +9,7 @@ import javax.validation.Valid;
 
 import org.contacomigo.core.oauth.domain.Address;
 import org.contacomigo.core.oauth.service.AddressService;
+import org.contacomigo.core.oauth.service.dto.AddressDTO;
 import org.contacomigo.core.oauth.web.rest.util.HeaderUtil;
 import org.contacomigo.core.oauth.web.rest.util.PaginationUtil;
 import org.slf4j.Logger;
@@ -29,7 +30,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.codahale.metrics.annotation.Timed;
 
-import io.github.jhipster.web.util.ResponseUtil;
 import io.swagger.annotations.ApiParam;
 
 /**
@@ -58,14 +58,14 @@ public class AddressResource {
      */
     @PostMapping("/addresses")
     @Timed
-    public ResponseEntity<Address> createAddress(@Valid @RequestBody Address address) throws URISyntaxException {
+    public ResponseEntity<AddressDTO> createAddress(@Valid @RequestBody Address address) throws URISyntaxException {
         log.debug("REST request to save Address : {}", address);
         
         if (addressService.findOne(address.getId()) != null) {
-        	return new ResponseEntity<Address>(HttpStatus.BAD_REQUEST);
+        	return new ResponseEntity<AddressDTO>(HttpStatus.BAD_REQUEST);
         }
         
-        Address result = addressService.save(address);
+        AddressDTO result = new AddressDTO(addressService.save(address));
         return ResponseEntity.created(new URI("/api/addresses/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);
@@ -82,12 +82,12 @@ public class AddressResource {
      */
     @PutMapping("/addresses")
     @Timed
-    public ResponseEntity<Address> updateAddress(@Valid @RequestBody Address address) throws URISyntaxException {
+    public ResponseEntity<AddressDTO> updateAddress(@Valid @RequestBody Address address) throws URISyntaxException {
         log.debug("REST request to update Address : {}", address);
         if (address.getId() == null) {
             return createAddress(address);
         }
-        Address result = addressService.save(address);
+        AddressDTO result = new AddressDTO(addressService.save(address));
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, address.getId().toString()))
             .body(result);
@@ -101,9 +101,9 @@ public class AddressResource {
      */
     @GetMapping("/addresses")
     @Timed
-    public ResponseEntity<List<Address>> getAllAddresses(@ApiParam Pageable pageable) {
+    public ResponseEntity<List<AddressDTO>> getAllAddresses(@ApiParam Pageable pageable) {
         log.debug("REST request to get a page of Addresses");
-        Page<Address> page = addressService.findAll(pageable);
+        Page<AddressDTO> page = addressService.findAll(pageable).map(AddressDTO::new);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/addresses");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
@@ -116,10 +116,11 @@ public class AddressResource {
      */
     @GetMapping("/addresses/{id}")
     @Timed
-    public ResponseEntity<Address> getAddress(@PathVariable String id) {
+    public ResponseEntity<AddressDTO> getAddress(@PathVariable String id) {
         log.debug("REST request to get Address : {}", id);
-        Address address = addressService.findOne(id);
-        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(address));
+        return Optional.ofNullable(addressService.findOne(id))
+                .map(address -> new ResponseEntity<>(new AddressDTO(address), HttpStatus.OK))
+                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     /**

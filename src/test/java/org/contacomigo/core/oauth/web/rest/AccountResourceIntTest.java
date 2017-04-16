@@ -26,6 +26,7 @@ import org.contacomigo.core.oauth.repository.UserRepository;
 import org.contacomigo.core.oauth.security.AuthoritiesConstants;
 import org.contacomigo.core.oauth.service.MailService;
 import org.contacomigo.core.oauth.service.UserService;
+import org.contacomigo.core.oauth.service.dto.AddressDTO;
 import org.contacomigo.core.oauth.web.rest.vm.ManagedUserVM;
 import org.junit.Before;
 import org.junit.Test;
@@ -186,7 +187,7 @@ public class AccountResourceIntTest {
     			new HashSet<>(Arrays.asList(AuthoritiesConstants.USER)));
     	
     	validUser.getAddresses().add(
-			new Address()
+			new AddressDTO()
 			.city("Porto Alegre")
 			.country("Brasil")
 			.street("Perimetral II")
@@ -205,7 +206,7 @@ public class AccountResourceIntTest {
     	
     	List<Address> addresses = addressRepository.findByUserEmail(user.get().getEmail());
     	assertThat(addresses).hasSize(1);
-    	assertThat(addresses.get(0)).isEqualToIgnoringGivenFields(validUser.getAddresses().get(0), "user");
+    	assertThat(addresses.get(0)).isEqualToIgnoringGivenFields(validUser.getAddresses().get(0), "id", "user");
     }
 
     @Test

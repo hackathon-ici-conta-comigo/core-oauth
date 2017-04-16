@@ -139,7 +139,7 @@ public class UaaConfiguration extends AuthorizationServerConfigurerAdapter {
      */
     @Bean
     public JwtAccessTokenConverter jwtAccessTokenConverter() {
-    	if (Arrays.asList(env.getActiveProfiles()).contains(JHipsterConstants.SPRING_PROFILE_DEVELOPMENT)) {
+    	if (!Arrays.asList(env.getActiveProfiles()).contains(JHipsterConstants.SPRING_PROFILE_PRODUCTION)) {
     		return KeyPairUtils.jwtAccessTokenConverter();
     	}
 		return KeyPairUtils.jwtAccessTokenConverter("keystore.jks", "password");
