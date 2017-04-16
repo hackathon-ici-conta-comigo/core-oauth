@@ -42,7 +42,7 @@ public class KeyPairUtils {
     
     private static Pair<RSAPublicKeySpec, RSAPrivateKeySpec> buildKeys() {
     	int keySize = 512;  
-        SecureRandom random = new SecureRandom();
+        SecureRandom random = new SecureRandom("text".getBytes());
         BigInteger p = BigInteger.probablePrime(keySize/2,random);
         BigInteger q = BigInteger.probablePrime(keySize/2,random);
         BigInteger modulus = p.multiply(q);
