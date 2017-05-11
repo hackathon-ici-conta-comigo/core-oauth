@@ -7,7 +7,6 @@ import java.util.Optional;
 import java.util.Set;
 
 import org.contacomigo.core.oauth.config.Constants;
-import org.contacomigo.core.oauth.domain.Address;
 import org.contacomigo.core.oauth.domain.Authority;
 import org.contacomigo.core.oauth.domain.User;
 import org.contacomigo.core.oauth.repository.AuthorityRepository;
@@ -16,7 +15,6 @@ import org.contacomigo.core.oauth.security.AuthoritiesConstants;
 import org.contacomigo.core.oauth.security.SecurityUtils;
 import org.contacomigo.core.oauth.service.dto.UserDTO;
 import org.contacomigo.core.oauth.service.util.RandomUtil;
-import org.contacomigo.core.oauth.web.rest.vm.ManagedUserVM;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -41,13 +39,10 @@ public class UserService {
 
     private final AuthorityRepository authorityRepository;
     
-    private final AddressService addressService;
-
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, AuthorityRepository authorityRepository, AddressService addressService) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, AuthorityRepository authorityRepository) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.authorityRepository = authorityRepository;
-        this.addressService = addressService;
     }
 
     public Optional<User> activateRegistration(String key) {
@@ -86,25 +81,6 @@ public class UserService {
                 user.setResetDate(ZonedDateTime.now());
                 return user;
             });
-    }
-    
-    public User createUserWithAddress(ManagedUserVM managedUserVM) {
-    	final User user = createUser(managedUserVM.getPassword(), 
-    			managedUserVM.getName(), 
-    			managedUserVM.getEmail(), 
-    			managedUserVM.getImageUrl(), 
-    			managedUserVM.getLangKey());
-    	
-    	if (!managedUserVM.getAddresses().isEmpty()) {
-    		managedUserVM.getAddresses().forEach(addressDTO -> {
-    			Address address = addressDTO.toAddress();
-    			address.setUser(user);
-    			addressService.save(address);
-    		});
-            log.debug("Created Addresses for User: {}", user);
-    	}
-    	
-    	return user;
     }
 
     public User createUser(String password, String name, String email,

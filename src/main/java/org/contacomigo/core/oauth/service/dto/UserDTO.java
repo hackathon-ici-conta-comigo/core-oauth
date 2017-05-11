@@ -1,14 +1,11 @@
 package org.contacomigo.core.oauth.service.dto;
 
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.validation.constraints.Size;
 
-import org.contacomigo.core.oauth.domain.Address;
 import org.contacomigo.core.oauth.domain.Authority;
 import org.contacomigo.core.oauth.domain.User;
 import org.hibernate.validator.constraints.Email;
@@ -45,11 +42,8 @@ public class UserDTO {
 
     private Set<String> authorities;
     
-    private List<AddressDTO> addresses;
-
     public UserDTO() {
         // Empty constructor needed for MapStruct.
-    	this.addresses = new ArrayList<AddressDTO>();
     }
 
     public UserDTO(User user) {
@@ -61,17 +55,9 @@ public class UserDTO {
     }
     
     public UserDTO(String id, String name,
-    		String email, boolean activated, String imageUrl, String langKey,
-    		String createdBy, ZonedDateTime createdDate, String lastModifiedBy, ZonedDateTime lastModifiedDate,
-    		Set<String> authorities) {
-    	this(id, name, email, activated, imageUrl, langKey, createdBy, createdDate, lastModifiedBy, lastModifiedDate,
-        authorities, new ArrayList<AddressDTO>());
-    }
-
-    public UserDTO(String id, String name,
         String email, boolean activated, String imageUrl, String langKey,
         String createdBy, ZonedDateTime createdDate, String lastModifiedBy, ZonedDateTime lastModifiedDate,
-        Set<String> authorities, List<AddressDTO> addresses) {
+        Set<String> authorities) {
 
         this.id = id;
         this.name = name;
@@ -84,7 +70,6 @@ public class UserDTO {
         this.lastModifiedBy = lastModifiedBy;
         this.lastModifiedDate = lastModifiedDate;
         this.authorities = authorities;
-        this.addresses = addresses;
     }
 
     public String getId() {
@@ -139,14 +124,6 @@ public class UserDTO {
         return authorities;
     }
 
-    public List<AddressDTO> getAddresses() {
-		return addresses;
-	}
-
-	public void setAddresses(List<AddressDTO> addresses) {
-		this.addresses = addresses;
-	}
-
 	@Override
     public String toString() {
         return "UserDTO{" +
@@ -160,7 +137,6 @@ public class UserDTO {
             ", lastModifiedBy='" + lastModifiedBy + '\'' +
             ", lastModifiedDate=" + lastModifiedDate +
             ", authorities=" + authorities +
-            ", addresses=" + addresses +
             "}";
     }
 }

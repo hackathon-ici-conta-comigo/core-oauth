@@ -1,13 +1,10 @@
 package org.contacomigo.core.oauth.web.rest.vm;
 
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 
 import javax.validation.constraints.Size;
 
-import org.contacomigo.core.oauth.service.dto.AddressDTO;
 import org.contacomigo.core.oauth.service.dto.UserDTO;
 
 /**
@@ -33,20 +30,9 @@ public class ManagedUserVM extends UserDTO {
     	
     	super(id, name, email, activated, imageUrl, langKey,
     			createdBy, createdDate, lastModifiedBy, lastModifiedDate,  
-    			authorities, new ArrayList<AddressDTO>());
+    			authorities);
     	
     	this.password = password;
-    }
-
-    public ManagedUserVM(String id, String password, String name,
-                         String email, boolean activated, String imageUrl, String langKey,
-                         String createdBy, ZonedDateTime createdDate, String lastModifiedBy, ZonedDateTime lastModifiedDate,
-                        Set<String> authorities, List<AddressDTO> addresses) {
-
-        super(id, name, email, activated, imageUrl, langKey,
-            createdBy, createdDate, lastModifiedBy, lastModifiedDate,  authorities, addresses);
-
-        this.password = password;
     }
 
     public String getPassword() {

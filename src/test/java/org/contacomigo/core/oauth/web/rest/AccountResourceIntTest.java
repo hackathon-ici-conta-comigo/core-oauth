@@ -12,21 +12,17 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
 import org.contacomigo.core.oauth.OauthApp;
-import org.contacomigo.core.oauth.domain.Address;
 import org.contacomigo.core.oauth.domain.Authority;
 import org.contacomigo.core.oauth.domain.User;
-import org.contacomigo.core.oauth.repository.AddressRepository;
 import org.contacomigo.core.oauth.repository.AuthorityRepository;
 import org.contacomigo.core.oauth.repository.UserRepository;
 import org.contacomigo.core.oauth.security.AuthoritiesConstants;
 import org.contacomigo.core.oauth.service.MailService;
 import org.contacomigo.core.oauth.service.UserService;
-import org.contacomigo.core.oauth.service.dto.AddressDTO;
 import org.contacomigo.core.oauth.web.rest.vm.ManagedUserVM;
 import org.junit.Before;
 import org.junit.Test;
@@ -53,9 +49,6 @@ public class AccountResourceIntTest {
     @Autowired
     private UserRepository userRepository;
     
-    @Autowired
-    private AddressRepository addressRepository;
-
     @Autowired
     private AuthorityRepository authorityRepository;
 
@@ -186,15 +179,6 @@ public class AccountResourceIntTest {
     			null,                   // lastModifiedDate
     			new HashSet<>(Arrays.asList(AuthoritiesConstants.USER)));
     	
-    	validUser.getAddresses().add(
-			new AddressDTO()
-			.city("Porto Alegre")
-			.country("Brasil")
-			.street("Perimetral II")
-			.number("1551")
-			.complement("123B")
-    	);
-    	
     	restMvc.perform(
     			post("/api/register")
     			.contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -203,10 +187,6 @@ public class AccountResourceIntTest {
     	
     	Optional<User> user = userRepository.findOneByEmail("joe@example.com");
     	assertThat(user.isPresent()).isTrue();
-    	
-    	List<Address> addresses = addressRepository.findByUserEmail(user.get().getEmail());
-    	assertThat(addresses).hasSize(1);
-    	assertThat(addresses.get(0)).isEqualToIgnoringGivenFields(validUser.getAddresses().get(0), "id", "user");
     }
 
     @Test
